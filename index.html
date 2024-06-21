@@ -36,8 +36,11 @@
     scene.background = new THREE.Color(0x4f30f0);
 
     const camera = new THREE.PerspectiveCamera(75, viewerWidth / viewerHeight, 0.1, 1000);
-    camera.position.set(0, 10, 10);
-    console.log("Camera Zoom: " + camera.zoom);
+
+    const initialCameraPosition = new THREE.Vector3(0, 10, 10);
+    const targetCameraPosition = new THREE.Vector3(0, 1.5, 1.5);
+
+    camera.position.copy(initialCameraPosition);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -51,18 +54,10 @@
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
     scene.add(light, ambientLight, directionalLight);
 
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.target.set(0, 10, 0);
-    controls.update();
-    controls.enablePan = false;
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.enableZoom = true;
-    controls.maxDistance = 100;
-
     const islandLoader = new GLTFLoader();
     const skyLoader = new GLTFLoader();
     var island, sky;
+
     islandLoader.load("/public/models/hobbithouse.glb", function (gltf) {
       island = gltf.scene;
       island.position.set(0, 0, 0);
@@ -72,6 +67,7 @@
     }, undefined, function (e) {
       console.error(e);
     });
+
     skyLoader.load("/public/models/sky.glb", function (gltf) {
       sky = gltf.scene;
       sky.position.set(0, 0, 0);
@@ -82,13 +78,12 @@
       console.error(e);
     });
 
+    
     const canvas = document.createElement('canvas');
     canvas.width = 1920 * 2;
     canvas.height = 1440 * 2;
 
     var ctx = canvas.getContext('2d');
-    // ctx.fillRect(0, 0, canvas.width, canvas.height);
-    // ctx.fillStyle = 'black';
     ctx.font = 'bold 270px Arial';
     ctx.fillStyle = 'white';
     ctx.textAlign = 'center';
@@ -117,24 +112,27 @@
       camera.updateProjectionMatrix();
     });
 
-    function scrollPage(e) {
-      console.log("Camera Dist: " + controls.getDistance());
-
-      if (controls.getDistance === 100) {
-        controls.enableZoom = false;
-      }
+    function lerp(start, end, t) {
+      return (1 - t) * start + t * end;
     }
+
+    let scrollProgress = 0;
+
+    window.addEventListener('scroll', () => {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      scrollProgress = window.scrollY / maxScroll;
+    });
 
     function animate() {
       requestAnimationFrame(animate);
-      sky.rotation.y += 0.0001;
-      controls.update();
+      if (sky) sky.rotation.y += 0.0001;
+
+      camera.position.lerpVectors(initialCameraPosition, targetCameraPosition, scrollProgress);
+
       renderer.render(scene, camera);
     }
 
-    window.addEventListener('wheel', scrollPage);
-
-
+    animate();
   </script>
 
   <script src="app.js"></script>
