@@ -12,16 +12,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <ul class="navbar__menu">
                     <li class="navbar__item">
-                        <a href="about.html" class="navbar__links">About</a>
+                        <a href="/pages/about.html" class="navbar__links">About</a>
                     </li>
                     <li class="navbar__item">
-                        <a href="projects.html" class="navbar__links">Projects</a>
+                        <a href="/pages/projects.html" class="navbar__links">Projects</a>
                     </li>
                     <li class="navbar__item">
-                        <a href="Jaffer_Razavi_Resume.pdf" target="_blank" class="navbar__links">Resume</a>
+                        <a href="/pages/Jaffer_Razavi_Resume.pdf" target="_blank" class="navbar__links">Resume</a>
                     </li>
                     <li class="navbar__item">
-                        <a href="contact.html" class="navbar__links">Contact</a>
+                        <a href="/pages/contact.html" class="navbar__links">Contact</a>
                     </li>
                 </ul>
             </div>

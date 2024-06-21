@@ -44,3 +44,10 @@ Projects:
 
 Resume:
  - href leads out to my resume.pdf
+
+Process:
+ - Create header and footer
+ - Render 3D models
+ - Add camera animations
+ - Prettify
+

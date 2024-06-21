@@ -6,34 +6,138 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>jaffer</title>
   <link rel="stylesheet" href="styles.css">
-  <link rel="icon" href="butterfly.ico">
+  <link rel="icon" href="/public/images/butterfly.ico">
   <script src="https://kit.fontawesome.com/3d1c5b6331.js" crossorigin="anonymous"></script>
-  <style>
-    body {
-      margin: 0;
-    }
-  </style>
   <script type="importmap">
-        {
-          "imports": {
-            "three": 
-            "https://cdn.jsdelivr.net/npm/three@v0.165.0/build/three.module.js",
-            "three/addons/":
-            "https://cdn.jsdelivr.net/npm/three@v0.165.0/examples/jsm/"
-          }
+    {
+        "imports": {
+            "three": "https://unpkg.com/three/build/three.module.js",
+            "three/examples/": "https://unpkg.com/three/examples/"
         }
-      </script>
+    }</script>
+
 </head>
 
 <body>
+
   <script src="components/navbar.js"></script>
-  <script type="module" src="home.js"></script>
   <script src="components/footer.js"></script>
-  
+  <div id="container" class="page-scroll"></div>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+    import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
+    const viewerWidth = window.innerWidth;
+    const viewerHeight = window.innerHeight;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x4f30f0);
+
+    const camera = new THREE.PerspectiveCamera(75, viewerWidth / viewerHeight, 0.1, 1000);
+    camera.position.set(0, 10, 10);
+    console.log("Camera Zoom: " + camera.zoom);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(viewerWidth, viewerHeight);
+
+    const container = document.getElementById('container');
+    container.appendChild(renderer.domElement);
+
+    const light = new THREE.HemisphereLight(0xffffff, 0xffffff, 2);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    scene.add(light, ambientLight, directionalLight);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.target.set(0, 10, 0);
+    controls.update();
+    controls.enablePan = false;
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.enableZoom = true;
+    controls.maxDistance = 100;
+
+    const islandLoader = new GLTFLoader();
+    const skyLoader = new GLTFLoader();
+    var island, sky;
+    islandLoader.load("/public/models/hobbithouse.glb", function (gltf) {
+      island = gltf.scene;
+      island.position.set(0, 0, 0);
+      island.rotation.set(0, 0, 0);
+      scene.add(island);
+      animate();
+    }, undefined, function (e) {
+      console.error(e);
+    });
+    skyLoader.load("/public/models/sky.glb", function (gltf) {
+      sky = gltf.scene;
+      sky.position.set(0, 0, 0);
+      sky.rotation.set(0, 0, 0);
+      scene.add(sky);
+      animate();
+    }, undefined, function (e) {
+      console.error(e);
+    });
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 1920 * 2;
+    canvas.height = 1440 * 2;
+
+    var ctx = canvas.getContext('2d');
+    // ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // ctx.fillStyle = 'black';
+    ctx.font = 'bold 270px Arial';
+    ctx.fillStyle = 'white';
+    ctx.textAlign = 'center';
+    ctx.fillText('hi, im jaffer', canvas.width / 2, canvas.height / 2);
+    ctx.textAlign = 'center';
+    ctx.fillText('i make things sometimes', canvas.width / 2, 2 * canvas.height / 3);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.magFilter = THREE.NearestFilter;
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+
+    var planeMaterial = new THREE.MeshBasicMaterial({ map: texture, });
+    planeMaterial.transparent = true;
+
+    var planeMesh = new THREE.Mesh((new THREE.PlaneGeometry(2 * 4 / 3, 2 * 1)), planeMaterial);
+    scene.add(planeMesh);
+    planeMesh.position.set(0, 16, -1);
+    planeMesh.scale.set(4, 4, 1);
+
+    window.addEventListener('resize', function () {
+      const viewerWidth = window.innerWidth;
+      const viewerHeight = window.innerHeight;
+      renderer.setSize(viewerWidth, viewerHeight);
+      camera.aspect = viewerWidth / viewerHeight;
+      camera.updateProjectionMatrix();
+    });
+
+    function scrollPage(e) {
+      console.log("Camera Dist: " + controls.getDistance());
+
+      if (controls.getDistance === 100) {
+        controls.enableZoom = false;
+      }
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      sky.rotation.y += 0.0001;
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    window.addEventListener('wheel', scrollPage);
+
+
+  </script>
+
   <script src="app.js"></script>
 </body>
 
 </html>
-
-
-
