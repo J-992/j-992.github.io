@@ -283,7 +283,7 @@ body {
 
 .main__container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1.5fr;
     align-items: center;
     justify-self: center;
     margin: 0 auto;
@@ -295,6 +295,7 @@ body {
 
 .main__content {
     background-color: #373737;
+    padding-right: 10px;
 
 }
 
@@ -473,7 +474,7 @@ body {
 
 .place01 h1 {
     font-size: 100px;
-    color: #8f8f8f;
+    color: #d0d0d0;
 }
 
 .place01 h2 {
@@ -483,7 +484,7 @@ body {
 }
 
 .place01 h3 {
-    font-size: 10px;
+    font-size: 15px;
     color: #8f8f8f;
 }
 
@@ -528,4 +529,45 @@ body {
         height: 90vh;    
     }
     
+}
+
+.skills{
+    background-color: #373737;
+}
+
+.skills__container {
+    display: grid;
+    grid-template-columns: 0.5fr 1fr;
+    margin: 0 auto;
+    background-color: #373737;
+    max-width: 1300px;
+    padding: 20px 10px;
+    color: #ffffff;
+}
+
+.skills__left {
+    text-align: center;
+    margin: 0 auto;
+    background-color: #373737;
+    padding: 200px 0;
+    align-items: center;
+    justify-self: center;
+}
+
+.skills__right {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 0 auto;
+    background-color: #401717;  
+    max-width: 1300px;
+    padding: 20px 10px;
+    color: #ffffff;
+}
+
+.skills01 {
+    margin: 0 auto;
+    background-color: #373737;
+    
+
+
 }
